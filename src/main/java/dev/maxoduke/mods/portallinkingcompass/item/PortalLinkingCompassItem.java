@@ -68,7 +68,7 @@ public class PortalLinkingCompassItem extends Item
         }
 
         level.playSound(null, usedOnBlockPos, PortalLinkingCompass.COMPASS_LOCKS_SOUND_EVENT, SoundSource.PLAYERS, 1.0f, 1.0f);
-        return InteractionResult.sidedSuccess(level.isClientSide);
+        return InteractionResult.SUCCESS;
     }
 
     public static GlobalPos pointToTarget(ClientLevel clientLevel, ItemStack itemStack, Entity ignore)
