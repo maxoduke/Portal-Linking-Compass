@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "dev.maxoduke.mods.portallinkingcompass.mixins",
+  "refmap": "${mod_id}.refmap.json",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "RangeSelectItemModelPropertiesMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

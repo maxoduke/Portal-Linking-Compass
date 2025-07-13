@@ -2,10 +2,7 @@ package dev.maxoduke.mods.portallinkingcompass.item;
 
 import dev.maxoduke.mods.portallinkingcompass.PortalLinkingCompass;
 import dev.maxoduke.mods.portallinkingcompass.item.component.LinkedPortalTracker;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.GlobalPos;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -69,32 +66,5 @@ public class PortalLinkingCompassItem extends Item
 
         level.playSound(null, usedOnBlockPos, PortalLinkingCompass.COMPASS_LOCKS_SOUND_EVENT, SoundSource.PLAYERS, 1.0f, 1.0f);
         return InteractionResult.SUCCESS;
-    }
-
-    public static GlobalPos pointToTarget(ClientLevel clientLevel, ItemStack itemStack, Entity ignore)
-    {
-        LinkedPortalTracker tracker = itemStack.get(PortalLinkingCompass.LINKED_PORTAL_TRACKER_COMPONENT);
-
-        if (tracker == null ||
-            tracker.isNotLinked() ||
-            tracker.originalPosition().isEmpty() ||
-            tracker.originalDimension().isEmpty() ||
-            tracker.targetPosition().isEmpty() ||
-            tracker.targetDimension().isEmpty()
-        )
-            return null;
-
-        ResourceKey<Level> currentDimension = clientLevel.dimension();
-        ResourceKey<Level> originalDimension = tracker.originalDimension().get();
-        ResourceKey<Level> targetDimension = tracker.targetDimension().get();
-        BlockPos originalPosition = tracker.originalPosition().get();
-        BlockPos targetPosition = tracker.targetPosition().get();
-
-        if (currentDimension == originalDimension)
-            return GlobalPos.of(originalDimension, originalPosition);
-        else if (currentDimension == targetDimension)
-            return GlobalPos.of(targetDimension, targetPosition);
-
-        return null;
     }
 }

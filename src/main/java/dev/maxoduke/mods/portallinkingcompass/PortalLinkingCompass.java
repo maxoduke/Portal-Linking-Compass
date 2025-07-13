@@ -3,8 +3,6 @@ package dev.maxoduke.mods.portallinkingcompass;
 import dev.maxoduke.mods.portallinkingcompass.item.PortalLinkingCompassItem;
 import dev.maxoduke.mods.portallinkingcompass.item.component.LinkedPortalTracker;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
-import net.minecraft.client.renderer.item.CompassItemPropertyFunction;
-import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -21,7 +19,7 @@ public class PortalLinkingCompass
 {
     public static final String MOD_ID = "portallinkingcompass";
 
-    public static final String LINKED_PORTAL_TRACKER_COMPONENT_NAME = "linked_portal_tracker_component";
+    public static final String LINKED_PORTAL_TRACKER_COMPONENT_NAME = "linked_portal_tracker";
     public static final ResourceLocation LINKED_PORTAL_TRACKER_COMPONENT_RESOURCE = ResourceLocation.fromNamespaceAndPath(
         PortalLinkingCompass.MOD_ID,
         PortalLinkingCompass.LINKED_PORTAL_TRACKER_COMPONENT_NAME
@@ -41,7 +39,7 @@ public class PortalLinkingCompass
     public static final Item ITEM = Items.registerItem(
         ResourceKey.create(Registries.ITEM, PortalLinkingCompass.ITEM_RESOURCE),
         PortalLinkingCompassItem::new,
-        new Item.Properties().component(LINKED_PORTAL_TRACKER_COMPONENT, new LinkedPortalTracker())
+        new Item.Properties().component(LINKED_PORTAL_TRACKER_COMPONENT, LinkedPortalTracker.empty())
     );
 
     public static final String COMPASS_LOCKS_SOUND_NAME = "item.portal_linking_compass.lock";
@@ -66,15 +64,6 @@ public class PortalLinkingCompass
             BuiltInRegistries.DATA_COMPONENT_TYPE,
             PortalLinkingCompass.LINKED_PORTAL_TRACKER_COMPONENT_RESOURCE,
             PortalLinkingCompass.LINKED_PORTAL_TRACKER_COMPONENT
-        );
-    }
-
-    public static void registerClient()
-    {
-        ItemProperties.register(
-            PortalLinkingCompass.ITEM,
-            ResourceLocation.withDefaultNamespace("angle"),
-            new CompassItemPropertyFunction(PortalLinkingCompassItem::pointToTarget)
         );
     }
 }
