@@ -3,9 +3,11 @@ package dev.maxoduke.mods.portallinkingcompass.item;
 import dev.maxoduke.mods.portallinkingcompass.PortalLinkingCompass;
 import dev.maxoduke.mods.portallinkingcompass.item.component.LinkedPortalTracker;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -13,6 +15,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class PortalLinkingCompassItem extends Item
 {
@@ -22,18 +25,15 @@ public class PortalLinkingCompassItem extends Item
     }
 
     @Override
-    public void inventoryTick(@NotNull ItemStack item, Level level, @NotNull Entity ignore, int ignore2, boolean ignore3)
+    public void inventoryTick(ItemStack itemStack, ServerLevel serverLevel, Entity entity, @Nullable EquipmentSlot equipmentSlot)
     {
-        if (level.isClientSide)
-            return;
-
-        LinkedPortalTracker tracker = item.get(PortalLinkingCompass.LINKED_PORTAL_TRACKER_COMPONENT);
+        LinkedPortalTracker tracker = itemStack.get(PortalLinkingCompass.LINKED_PORTAL_TRACKER_COMPONENT);
         if (tracker == null)
             return;
 
-        LinkedPortalTracker newTracker = tracker.tick(level);
+        LinkedPortalTracker newTracker = tracker.tick(serverLevel);
         if (tracker != newTracker)
-            item.set(PortalLinkingCompass.LINKED_PORTAL_TRACKER_COMPONENT, newTracker);
+            itemStack.set(PortalLinkingCompass.LINKED_PORTAL_TRACKER_COMPONENT, newTracker);
     }
 
     @SuppressWarnings("DataFlowIssue")
