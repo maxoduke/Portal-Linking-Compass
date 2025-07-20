@@ -3,7 +3,9 @@ package dev.maxoduke.mods.portallinkingcompass.item.component;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
@@ -25,12 +27,12 @@ public record LinkedPortalTracker(
 {
     public static final Codec<LinkedPortalTracker> CODEC = RecordCodecBuilder.create((instance) ->
         instance.group(
-            BlockPos.CODEC.optionalFieldOf("originalPosition").forGetter(LinkedPortalTracker::originalPosition),
-            Level.RESOURCE_KEY_CODEC.optionalFieldOf("originalDimension").forGetter(LinkedPortalTracker::originalDimension),
-            BlockPos.CODEC.optionalFieldOf("targetPosition").forGetter(LinkedPortalTracker::targetPosition),
-            Level.RESOURCE_KEY_CODEC.optionalFieldOf("targetDimension").forGetter(LinkedPortalTracker::targetDimension)
-        )
-        .apply(instance, LinkedPortalTracker::new)
+                BlockPos.CODEC.optionalFieldOf("originalPosition").forGetter(LinkedPortalTracker::originalPosition),
+                Level.RESOURCE_KEY_CODEC.optionalFieldOf("originalDimension").forGetter(LinkedPortalTracker::originalDimension),
+                BlockPos.CODEC.optionalFieldOf("targetPosition").forGetter(LinkedPortalTracker::targetPosition),
+                Level.RESOURCE_KEY_CODEC.optionalFieldOf("targetDimension").forGetter(LinkedPortalTracker::targetDimension)
+            )
+            .apply(instance, LinkedPortalTracker::new)
     );
 
     public static final StreamCodec<ByteBuf, LinkedPortalTracker> STREAM_CODEC = StreamCodec.composite(
@@ -45,9 +47,9 @@ public record LinkedPortalTracker(
         LinkedPortalTracker::new
     );
 
-    public LinkedPortalTracker()
+    public static LinkedPortalTracker empty()
     {
-        this(
+        return new LinkedPortalTracker(
             Optional.empty(),
             Optional.empty(),
             Optional.empty(),
@@ -81,7 +83,7 @@ public record LinkedPortalTracker(
         if (originalPortalBlockExists)
             return this;
 
-        return new LinkedPortalTracker();
+        return LinkedPortalTracker.empty();
     }
 
     public boolean isNotLinked()
@@ -105,5 +107,29 @@ public record LinkedPortalTracker(
         double z = originalPosition.getZ() * coordinateScale;
 
         return level.getWorldBorder().clampToBounds(x, y, z);
+    }
+
+    public Optional<GlobalPos> getTargetPos(ClientLevel clientLevel)
+    {
+        if (isNotLinked() ||
+            originalPosition().isEmpty() ||
+            originalDimension().isEmpty() ||
+            targetPosition().isEmpty() ||
+            targetDimension().isEmpty()
+        )
+            return Optional.empty();
+
+        ResourceKey<Level> currentDimension = clientLevel.dimension();
+        ResourceKey<Level> originalDimension = originalDimension().get();
+        ResourceKey<Level> targetDimension = targetDimension().get();
+        BlockPos originalPosition = originalPosition().get();
+        BlockPos targetPosition = targetPosition().get();
+
+        if (currentDimension == originalDimension)
+            return Optional.of(GlobalPos.of(originalDimension, originalPosition));
+        else if (currentDimension == targetDimension)
+            return Optional.of(GlobalPos.of(targetDimension, targetPosition));
+
+        return Optional.empty();
     }
 }
