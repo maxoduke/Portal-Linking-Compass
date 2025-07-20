@@ -5,6 +5,7 @@ import dev.maxoduke.mods.portallinkingcompass.client.PortalLinkingCompassAngle;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.item.properties.numeric.RangeSelectItemModelProperties;
+import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -17,6 +18,6 @@ public class RangeSelectItemModelPropertiesMixin
     @Inject(method = "bootstrap", at = @At("TAIL"))
     private static void bootstrap(CallbackInfo ci)
     {
-        RangeSelectItemModelProperties.ID_MAPPER.put(PortalLinkingCompass.ITEM_RESOURCE, PortalLinkingCompassAngle.MAP_CODEC);
+        RangeSelectItemModelProperties.ID_MAPPER.put(ResourceLocation.fromNamespaceAndPath(PortalLinkingCompass.MOD_ID, "angle"), PortalLinkingCompassAngle.MAP_CODEC);
     }
 }

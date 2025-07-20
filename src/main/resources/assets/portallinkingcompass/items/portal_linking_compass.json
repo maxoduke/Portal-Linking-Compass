@@ -2,7 +2,7 @@
   "model": {
     "type": "minecraft:range_dispatch",
     "scale": 32.0,
-    "property": "portallinkingcompass:portal_linking_compass",
+    "property": "portallinkingcompass:angle",
     "target": "portal",
     "entries": [
       {
@@ -10,7 +10,7 @@
           "type": "minecraft:model",
           "model": "portallinkingcompass:item/portal_linking_compass_16"
         },
-        "threshold": 0.0
+        "threshold": 0
       },
       {
         "model": {
