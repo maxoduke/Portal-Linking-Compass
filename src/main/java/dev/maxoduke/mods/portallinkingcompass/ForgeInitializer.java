@@ -1,29 +1,16 @@
 package dev.maxoduke.mods.portallinkingcompass;
 
-import com.mojang.serialization.MapCodec;
-import dev.maxoduke.mods.portallinkingcompass.client.PortalLinkingCompassAngle;
-import net.minecraft.client.renderer.item.properties.numeric.RangeSelectItemModelProperties;
-import net.minecraft.client.renderer.item.properties.numeric.RangeSelectItemModelProperty;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.eventbus.api.bus.BusGroup;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-
-import java.lang.reflect.Field;
 
 @Mod(PortalLinkingCompass.MOD_ID)
 public class ForgeInitializer
@@ -41,41 +28,18 @@ public class ForgeInitializer
 
     public ForgeInitializer(FMLJavaModLoadingContext context)
     {
-        IEventBus eventBus = context.getModEventBus();
+        BusGroup modBusGroup = context.getModBusGroup();
 
-        ITEMS.register(eventBus);
-        SOUND_EVENTS.register(eventBus);
-        DATA_COMPONENT_TYPES.register(eventBus);
+        ITEMS.register(modBusGroup);
+        SOUND_EVENTS.register(modBusGroup);
+        DATA_COMPONENT_TYPES.register(modBusGroup);
 
-        MinecraftForge.EVENT_BUS.register(this);
-        eventBus.addListener(this::addCreative);
+        BuildCreativeModeTabContentsEvent.getBus(modBusGroup).addListener(ForgeInitializer::addCreative);
     }
 
-    private void addCreative(BuildCreativeModeTabContentsEvent event)
+    private static void addCreative(BuildCreativeModeTabContentsEvent event)
     {
         if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES)
             event.accept(PortalLinkingCompass.ITEM);
-    }
-
-    @Mod.EventBusSubscriber(modid = PortalLinkingCompass.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-    public static class ClientModEvents
-    {
-        @SuppressWarnings("unchecked")
-        @SubscribeEvent
-        public static void onClientSetup(FMLClientSetupEvent event)
-        {
-            try
-            {
-                Field idMapperField = ObfuscationReflectionHelper.findField(RangeSelectItemModelProperties.class, "ID_MAPPER");
-                var idMapper = (ExtraCodecs.LateBoundIdMapper<ResourceLocation, MapCodec<? extends RangeSelectItemModelProperty>>) idMapperField.get(null);
-
-                idMapper.put(PortalLinkingCompass.ITEM_RESOURCE, PortalLinkingCompassAngle.MAP_CODEC);
-            }
-            catch (IllegalAccessException e)
-            {
-                PortalLinkingCompass.LOGGER.error("Failed to register Portal Linking Compass client code");
-                throw new RuntimeException("Failed to register Portal Linking Compass client code");
-            }
-        }
     }
 }

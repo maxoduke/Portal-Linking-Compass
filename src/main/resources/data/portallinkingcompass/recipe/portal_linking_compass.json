@@ -4,12 +4,12 @@
   "key": {
     "O": "minecraft:obsidian",
     "C": "minecraft:compass",
-    "N": "minecraft:netherite_ingot"
+    "I": "minecraft:iron_ingot"
   },
   "pattern": [
     " O ",
     "OCO",
-    " N "
+    " I "
   ],
   "result": {
     "id": "portallinkingcompass:portal_linking_compass",

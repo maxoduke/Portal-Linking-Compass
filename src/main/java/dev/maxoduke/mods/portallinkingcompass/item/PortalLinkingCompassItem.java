@@ -3,9 +3,11 @@ package dev.maxoduke.mods.portallinkingcompass.item;
 import dev.maxoduke.mods.portallinkingcompass.PortalLinkingCompass;
 import dev.maxoduke.mods.portallinkingcompass.item.component.LinkedPortalTracker;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -22,11 +24,8 @@ public class PortalLinkingCompassItem extends Item
     }
 
     @Override
-    public void inventoryTick(@NotNull ItemStack item, Level level, @NotNull Entity ignore, int ignore2, boolean ignore3)
+    public void inventoryTick(@NotNull ItemStack item, @NotNull ServerLevel level, @NotNull Entity ignore, EquipmentSlot equipmentSlot)
     {
-        if (level.isClientSide)
-            return;
-
         LinkedPortalTracker tracker = item.get(PortalLinkingCompass.LINKED_PORTAL_TRACKER_COMPONENT);
         if (tracker == null)
             return;

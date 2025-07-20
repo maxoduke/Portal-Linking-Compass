@@ -41,18 +41,16 @@ The recipe is unlocked after picking up a compass, and will become visible in th
 It requires:
 - 3 obsidian
 - 1 compass
-- 1 netherite Ingot
+- 1 iron Ingot
 <dl>
    <dd>
       <dl>
          <dd>
-            <img width="300px" src="https://maxoduke.dev/assets/images/mods/portal-linking-compass/step1.png" alt="Craftin Recipe" />
+            <img width="300px" src="https://maxoduke.dev/assets/images/mods/portal-linking-compass/step1-updated.png" alt="Crafting Recipe" />
          </dd>
       </dl>
    </dd>
-</dl>  
-
-Why an expensive recipe? This compass can be used as an alternative for vanilla lodestone, which I never intended. A lodestone requires a Netherite ingot to be crafted, so does this one.
+</dl>
 
 ### Step 2:
 - Right-click a nether portal block with the compass.
