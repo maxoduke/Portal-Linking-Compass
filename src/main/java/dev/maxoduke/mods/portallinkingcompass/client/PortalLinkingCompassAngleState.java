@@ -15,6 +15,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -45,14 +46,23 @@ public class PortalLinkingCompassAngleState extends NeedleDirectionHelper
     }
 
     @Override
-    protected float calculate(ItemStack itemStack, ClientLevel clientLevel, int seed, Entity entity)
+    protected float calculate(ItemStack itemStack, ClientLevel clientLevel, int seed, @Nullable ItemOwner itemOwner)
     {
         long gameTime = clientLevel.getGameTime();
-        GlobalPos targetPos = this.target.get(clientLevel, itemStack, entity);
+        Entity entity;
 
-        if (entity == null)
+        if (itemOwner == null)
+        {
             entity = itemStack.getEntityRepresentation();
+        }
+        else
+        {
+            entity = itemOwner.asLivingEntity();
+            if (entity == null)
+                entity = itemStack.getEntityRepresentation();
+        }
 
+        GlobalPos targetPos = this.target.get(clientLevel, itemStack, entity);
         return !isValidCompassTargetPos(entity, targetPos)
             ? this.getRandomlySpinningRotation(seed, gameTime)
             : this.getRotationTowardsCompassTarget(entity, gameTime, targetPos.pos());
