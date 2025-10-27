@@ -3,7 +3,7 @@ package dev.maxoduke.mods.portallinkingcompass.client;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.properties.numeric.RangeSelectItemModelProperty;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -26,9 +26,9 @@ public class PortalLinkingCompassAngle implements RangeSelectItemModelProperty
     }
 
     @Override
-    public float get(@NotNull ItemStack itemStack, ClientLevel clientLevel, @Nullable LivingEntity livingEntity, int seed)
+    public float get(@NotNull ItemStack itemStack, ClientLevel clientLevel, @Nullable ItemOwner itemOwner, int seed)
     {
-        return state.calculate(itemStack, clientLevel, seed, livingEntity);
+        return state.calculate(itemStack, clientLevel, seed, itemOwner);
     }
 
     @Override

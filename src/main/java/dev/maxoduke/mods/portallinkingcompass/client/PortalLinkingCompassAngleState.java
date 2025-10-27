@@ -13,6 +13,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -26,12 +27,12 @@ public class PortalLinkingCompassAngleState extends NeedleDirectionHelper
     public static final MapCodec<PortalLinkingCompassAngleState> MAP_CODEC = RecordCodecBuilder.mapCodec(
         instance -> instance.group(
                 Codec.BOOL.optionalFieldOf("wobble", true).forGetter(o -> o.wobble()),
-                CompassTarget.CODEC.fieldOf("target").forGetter(angleState -> angleState.target)
+                PortalLinkingCompassAngleState.CompassTarget.CODEC.fieldOf("target").forGetter(angleState -> angleState.target)
             )
             .apply(instance, PortalLinkingCompassAngleState::new)
     );
-    private final Wobbler wobbler;
-    private final Wobbler noTargetWobbler;
+    private final NeedleDirectionHelper.Wobbler wobbler;
+    private final NeedleDirectionHelper.Wobbler noTargetWobbler;
     private final CompassTarget target;
     private final RandomSource random = RandomSource.create();
 
@@ -45,14 +46,23 @@ public class PortalLinkingCompassAngleState extends NeedleDirectionHelper
     }
 
     @Override
-    protected float calculate(@NotNull ItemStack itemStack, ClientLevel clientLevel, int seed, @Nullable Entity entity)
+    protected float calculate(@NotNull ItemStack itemStack, ClientLevel clientLevel, int seed, @Nullable ItemOwner itemOwner)
     {
         long gameTime = clientLevel.getGameTime();
-        GlobalPos targetPos = this.target.get(clientLevel, itemStack, entity);
+        Entity entity;
 
-        if (entity == null)
+        if (itemOwner == null)
+        {
             entity = itemStack.getEntityRepresentation();
+        }
+        else
+        {
+            entity = itemOwner.asLivingEntity();
+            if (entity == null)
+                entity = itemStack.getEntityRepresentation();
+        }
 
+        GlobalPos targetPos = this.target.get(clientLevel, itemStack, entity);
         return !isValidCompassTargetPos(entity, targetPos)
             ? this.getRandomlySpinningRotation(seed, gameTime)
             : this.getRotationTowardsCompassTarget(entity, gameTime, targetPos.pos());
@@ -106,25 +116,25 @@ public class PortalLinkingCompassAngleState extends NeedleDirectionHelper
     public enum CompassTarget implements StringRepresentable
     {
         NONE("none")
-        {
-            @Nullable
-            @Override
-            public GlobalPos get(ClientLevel clientLevel, ItemStack itemStack, Entity entity)
             {
-                return null;
-            }
-        },
+                @Nullable
+                @Override
+                public GlobalPos get(ClientLevel clientLevel, ItemStack itemStack, Entity entity)
+                {
+                    return null;
+                }
+            },
 
         PORTAL("portal")
-        {
-            @Nullable
-            @Override
-            public GlobalPos get(ClientLevel clientLevel, ItemStack itemStack, Entity entity)
             {
-                LinkedPortalTracker linkedPortalTracker = itemStack.get(PortalLinkingCompass.LINKED_PORTAL_TRACKER_COMPONENT);
-                return linkedPortalTracker != null ? linkedPortalTracker.getTargetPos(clientLevel).orElse(null) : null;
-            }
-        };
+                @Nullable
+                @Override
+                public GlobalPos get(ClientLevel clientLevel, ItemStack itemStack, Entity entity)
+                {
+                    LinkedPortalTracker linkedPortalTracker = itemStack.get(PortalLinkingCompass.LINKED_PORTAL_TRACKER_COMPONENT);
+                    return linkedPortalTracker != null ? linkedPortalTracker.getTargetPos(clientLevel).orElse(null) : null;
+                }
+            };
 
         public static final Codec<CompassTarget> CODEC = StringRepresentable.fromValues(() -> new CompassTarget[]{ NONE, PORTAL });
         private final String name;

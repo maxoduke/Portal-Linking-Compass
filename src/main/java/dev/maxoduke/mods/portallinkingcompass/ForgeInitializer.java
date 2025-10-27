@@ -34,7 +34,7 @@ public class ForgeInitializer
         SOUND_EVENTS.register(modBusGroup);
         DATA_COMPONENT_TYPES.register(modBusGroup);
 
-        BuildCreativeModeTabContentsEvent.getBus(modBusGroup).addListener(ForgeInitializer::addCreative);
+        BuildCreativeModeTabContentsEvent.BUS.addListener(ForgeInitializer::addCreative);
     }
 
     private static void addCreative(BuildCreativeModeTabContentsEvent event)

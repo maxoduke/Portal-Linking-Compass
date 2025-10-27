@@ -23,7 +23,6 @@ public class PortalLinkingCompass
         .build();
 
     public static final String ITEM_NAME = "portal_linking_compass";
-    public static final ResourceLocation ITEM_RESOURCE = ResourceLocation.fromNamespaceAndPath(MOD_ID, ITEM_NAME);
     public static final Item ITEM = new PortalLinkingCompassItem(new Item
         .Properties()
         .setId(ForgeInitializer.ITEMS.key(ITEM_NAME))
