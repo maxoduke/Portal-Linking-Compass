@@ -12,8 +12,9 @@ import net.minecraft.core.GlobalPos;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ItemOwner;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -49,23 +50,11 @@ public class PortalLinkingCompassAngleState extends NeedleDirectionHelper
     protected float calculate(@NotNull ItemStack itemStack, ClientLevel clientLevel, int seed, @Nullable ItemOwner itemOwner)
     {
         long gameTime = clientLevel.getGameTime();
-        Entity entity;
+        GlobalPos targetPos = this.target.get(clientLevel, itemStack, itemOwner);
 
-        if (itemOwner == null)
-        {
-            entity = itemStack.getEntityRepresentation();
-        }
-        else
-        {
-            entity = itemOwner.asLivingEntity();
-            if (entity == null)
-                entity = itemStack.getEntityRepresentation();
-        }
-
-        GlobalPos targetPos = this.target.get(clientLevel, itemStack, entity);
-        return !isValidCompassTargetPos(entity, targetPos)
+        return !isValidCompassTargetPos(itemOwner, targetPos)
             ? this.getRandomlySpinningRotation(seed, gameTime)
-            : this.getRotationTowardsCompassTarget(entity, gameTime, targetPos.pos());
+            : this.getRotationTowardsCompassTarget(itemOwner, gameTime, targetPos.pos());
     }
 
     private float getRandomlySpinningRotation(int i, long l)
@@ -79,32 +68,43 @@ public class PortalLinkingCompassAngleState extends NeedleDirectionHelper
         return Mth.positiveModulo(f, 1.0F);
     }
 
-    private float getRotationTowardsCompassTarget(Entity entity, long gameTime, BlockPos blockPos)
+    private float getRotationTowardsCompassTarget(ItemOwner itemOwner, long gameTime, BlockPos blockPos)
     {
-        float f = (float) getAngleFromEntityToPos(entity, blockPos);
-        float g = getWrappedVisualRotationY(entity);
+        float f = (float)getAngleFromEntityToPos(itemOwner, blockPos);
+        float g = getWrappedVisualRotationY(itemOwner);
+        LivingEntity livingEntity = itemOwner.asLivingEntity();
+        float h;
+        if (livingEntity instanceof Player player) {
+            //noinspection resource
+            if (player.isLocalPlayer() && player.level().tickRateManager().runsNormally()) {
+                if (this.wobbler.shouldUpdate(gameTime)) {
+                    this.wobbler.update(gameTime, 0.5F - (g - 0.25F));
+                }
 
-        if (this.wobbler.shouldUpdate(gameTime))
-            this.wobbler.update(gameTime, 0.5F - (g - 0.25F));
+                h = f + this.wobbler.rotation();
+                return Mth.positiveModulo(h, 1.0F);
+            }
+        }
 
-        float h = f + this.wobbler.rotation();
+        h = 0.5F - (g - 0.25F - f);
         return Mth.positiveModulo(h, 1.0F);
     }
 
-    private static boolean isValidCompassTargetPos(Entity entity, @Nullable GlobalPos globalPos)
+    private static boolean isValidCompassTargetPos(@Nullable ItemOwner itemOwner, @Nullable GlobalPos globalPos)
     {
-        return globalPos != null && !(globalPos.pos().distToCenterSqr(entity.position()) < 1.0E-5F);
+        return globalPos != null && itemOwner != null && !(globalPos.pos().distToCenterSqr(itemOwner.position()) < 1.0E-5F);
     }
 
-    private static double getAngleFromEntityToPos(Entity entity, BlockPos blockPos)
+    private static double getAngleFromEntityToPos(ItemOwner itemOwner, BlockPos blockPos)
     {
         Vec3 vec3 = Vec3.atCenterOf(blockPos);
-        return Math.atan2(vec3.z() - entity.getZ(), vec3.x() - entity.getX()) / (float) (Math.PI * 2);
+        Vec3 vec32 = itemOwner.position();
+        return Math.atan2(vec3.z() - vec32.z(), vec3.x() - vec32.x()) / (double) ((float) Math.PI * 2F);
     }
 
-    private static float getWrappedVisualRotationY(Entity entity)
+    private static float getWrappedVisualRotationY(ItemOwner itemOwner)
     {
-        return Mth.positiveModulo(entity.getVisualRotationYInDegrees() / 360.0F, 1.0F);
+        return Mth.positiveModulo(itemOwner.getVisualRotationYInDegrees() / 360.0F, 1.0F);
     }
 
     private static int hash(int i)
@@ -119,7 +119,7 @@ public class PortalLinkingCompassAngleState extends NeedleDirectionHelper
             {
                 @Nullable
                 @Override
-                public GlobalPos get(ClientLevel clientLevel, ItemStack itemStack, Entity entity)
+                public GlobalPos get(ClientLevel clientLevel, ItemStack itemStack, @Nullable ItemOwner itemOwner)
                 {
                     return null;
                 }
@@ -129,7 +129,7 @@ public class PortalLinkingCompassAngleState extends NeedleDirectionHelper
             {
                 @Nullable
                 @Override
-                public GlobalPos get(ClientLevel clientLevel, ItemStack itemStack, Entity entity)
+                public GlobalPos get(ClientLevel clientLevel, ItemStack itemStack, @Nullable ItemOwner itemOwner)
                 {
                     LinkedPortalTracker linkedPortalTracker = itemStack.get(PortalLinkingCompass.LINKED_PORTAL_TRACKER_COMPONENT);
                     return linkedPortalTracker != null ? linkedPortalTracker.getTargetPos(clientLevel).orElse(null) : null;
@@ -151,6 +151,6 @@ public class PortalLinkingCompassAngleState extends NeedleDirectionHelper
         }
 
         @Nullable
-        abstract GlobalPos get(ClientLevel clientLevel, ItemStack itemStack, Entity entity);
+        abstract GlobalPos get(ClientLevel clientLevel, ItemStack itemStack, @Nullable ItemOwner itemOwner);
     }
 }
