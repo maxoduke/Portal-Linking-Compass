@@ -28,7 +28,7 @@ public class PortalLinkingCompassAngle implements RangeSelectItemModelProperty
     @Override
     public float get(ItemStack itemStack, ClientLevel clientLevel, @Nullable ItemOwner itemOwner, int seed)
     {
-        return state.calculate(itemStack, clientLevel, seed, itemOwner);
+        return state.get(itemStack, clientLevel, itemOwner, seed);
     }
 
     @Override
