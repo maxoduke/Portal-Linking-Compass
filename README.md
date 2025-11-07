@@ -46,7 +46,7 @@ It requires:
    <dd>
       <dl>
          <dd>
-            <img width="300px" src="https://maxoduke.dev/assets/images/mods/portal-linking-compass/step1-updated.png" alt="Crafting Recipe" />
+            <img width="300px" src="https://files.chimerasmp.online/assets/images/mods/portal-linking-compass/step1-updated.png" alt="Crafting Recipe" />
          </dd>
       </dl>
    </dd>
@@ -58,7 +58,7 @@ It requires:
    <dd>
       <dl>
          <dd>
-            <img width="300px" src="https://maxoduke.dev/assets/images/mods/portal-linking-compass/step2.jpg" alt="Right-click Portal with compass" />
+            <img width="300px" src="https://files.chimerasmp.online/assets/images/mods/portal-linking-compass/step2.jpg" alt="Right-click Portal with compass" />
          </dd>
       </dl>
    </dd>
