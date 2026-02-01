@@ -25,7 +25,7 @@ public class PortalLinkingCompassItem extends Item
     }
 
     @Override
-    public void inventoryTick(ItemStack itemStack, ServerLevel serverLevel, Entity entity, @Nullable EquipmentSlot equipmentSlot)
+    public void inventoryTick(ItemStack itemStack, @NotNull ServerLevel serverLevel, @NotNull Entity entity, @Nullable EquipmentSlot equipmentSlot)
     {
         LinkedPortalTracker tracker = itemStack.get(PortalLinkingCompass.LINKED_PORTAL_TRACKER_COMPONENT);
         if (tracker == null)

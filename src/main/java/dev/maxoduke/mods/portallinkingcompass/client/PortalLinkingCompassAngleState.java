@@ -47,7 +47,7 @@ public class PortalLinkingCompassAngleState extends NeedleDirectionHelper
     }
 
     @Override
-    protected float calculate(ItemStack itemStack, ClientLevel clientLevel, int seed, @Nullable ItemOwner itemOwner)
+    protected float calculate(@NotNull ItemStack itemStack, ClientLevel clientLevel, int seed, @Nullable ItemOwner itemOwner)
     {
         long gameTime = clientLevel.getGameTime();
         GlobalPos targetPos = this.target.get(clientLevel, itemStack, itemOwner);
