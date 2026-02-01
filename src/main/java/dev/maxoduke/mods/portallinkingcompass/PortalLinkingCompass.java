@@ -3,7 +3,7 @@ package dev.maxoduke.mods.portallinkingcompass;
 import dev.maxoduke.mods.portallinkingcompass.item.PortalLinkingCompassItem;
 import dev.maxoduke.mods.portallinkingcompass.item.component.LinkedPortalTracker;
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.Item;
 import org.apache.logging.log4j.LogManager;
@@ -30,6 +30,6 @@ public class PortalLinkingCompass
     );
 
     public static final String COMPASS_LOCKS_SOUND_NAME = "item.portal_linking_compass.lock";
-    public static final ResourceLocation COMPASS_LOCKS_SOUND_RESOURCE = ResourceLocation.fromNamespaceAndPath(PortalLinkingCompass.MOD_ID, COMPASS_LOCKS_SOUND_NAME);
+    public static final Identifier COMPASS_LOCKS_SOUND_RESOURCE = Identifier.fromNamespaceAndPath(PortalLinkingCompass.MOD_ID, COMPASS_LOCKS_SOUND_NAME);
     public static final SoundEvent COMPASS_LOCKS_SOUND_EVENT = SoundEvent.createVariableRangeEvent(COMPASS_LOCKS_SOUND_RESOURCE);
 }

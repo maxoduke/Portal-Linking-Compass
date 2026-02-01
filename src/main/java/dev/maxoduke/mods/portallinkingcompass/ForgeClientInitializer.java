@@ -4,7 +4,7 @@ import com.mojang.serialization.MapCodec;
 import dev.maxoduke.mods.portallinkingcompass.client.PortalLinkingCompassAngle;
 import net.minecraft.client.renderer.item.properties.numeric.RangeSelectItemModelProperties;
 import net.minecraft.client.renderer.item.properties.numeric.RangeSelectItemModelProperty;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
@@ -25,8 +25,8 @@ public class ForgeClientInitializer
     {
         try
         {
-            var idMapper = (ExtraCodecs.LateBoundIdMapper<ResourceLocation, MapCodec<? extends RangeSelectItemModelProperty>>) idMapperField.get(null);
-            idMapper.put(ResourceLocation.fromNamespaceAndPath(PortalLinkingCompass.MOD_ID, "angle"), PortalLinkingCompassAngle.MAP_CODEC);
+            var idMapper = (ExtraCodecs.LateBoundIdMapper<Identifier, MapCodec<? extends RangeSelectItemModelProperty>>) idMapperField.get(null);
+            idMapper.put(Identifier.fromNamespaceAndPath(PortalLinkingCompass.MOD_ID, "angle"), PortalLinkingCompassAngle.MAP_CODEC);
         }
         catch (IllegalAccessException e)
         {
