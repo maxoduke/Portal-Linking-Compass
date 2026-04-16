@@ -2,7 +2,7 @@ package dev.maxoduke.mods.portallinkingcompass;
 
 import dev.maxoduke.mods.portallinkingcompass.item.PortalLinkingCompassItem;
 import dev.maxoduke.mods.portallinkingcompass.item.component.LinkedPortalTracker;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -10,9 +10,11 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
+
+import java.util.function.Function;
 
 @SuppressWarnings("SpellCheckingInspection")
 public class PortalLinkingCompass
@@ -36,7 +38,7 @@ public class PortalLinkingCompass
         PortalLinkingCompass.ITEM_NAME
     );
 
-    public static final Item ITEM = Items.registerItem(
+    public static final Item ITEM = registerItem(
         ResourceKey.create(Registries.ITEM, PortalLinkingCompass.ITEM_RESOURCE),
         PortalLinkingCompassItem::new,
         new Item.Properties().component(LINKED_PORTAL_TRACKER_COMPONENT, LinkedPortalTracker.empty())
@@ -51,7 +53,7 @@ public class PortalLinkingCompass
 
     public static void register()
     {
-        ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES)
+        CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.TOOLS_AND_UTILITIES)
             .register((content) -> content.accept(PortalLinkingCompass.ITEM));
 
         Registry.register(
@@ -65,5 +67,14 @@ public class PortalLinkingCompass
             PortalLinkingCompass.LINKED_PORTAL_TRACKER_COMPONENT_RESOURCE,
             PortalLinkingCompass.LINKED_PORTAL_TRACKER_COMPONENT
         );
+    }
+
+    private static Item registerItem(final ResourceKey<Item> key, final Function<Item.Properties, Item> itemFactory, final Item.Properties properties) {
+        Item item = itemFactory.apply(properties.setId(key));
+        if (item instanceof BlockItem blockItem) {
+            blockItem.registerBlocks(Item.BY_BLOCK, item);
+        }
+
+        return Registry.register(BuiltInRegistries.ITEM, key, item);
     }
 }
