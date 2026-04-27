@@ -5,12 +5,9 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.properties.numeric.RangeSelectItemModelProperty;
 import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@OnlyIn(Dist.CLIENT)
 public class PortalLinkingCompassAngle implements RangeSelectItemModelProperty
 {
     public static final MapCodec<PortalLinkingCompassAngle> MAP_CODEC = PortalLinkingCompassAngleState.MAP_CODEC.xmap(

@@ -17,12 +17,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@OnlyIn(Dist.CLIENT)
 public class PortalLinkingCompassAngleState extends NeedleDirectionHelper
 {
     public static final MapCodec<PortalLinkingCompassAngleState> MAP_CODEC = RecordCodecBuilder.mapCodec(
@@ -112,7 +109,6 @@ public class PortalLinkingCompassAngleState extends NeedleDirectionHelper
         return i * 1327217883;
     }
 
-    @OnlyIn(Dist.CLIENT)
     public enum CompassTarget implements StringRepresentable
     {
         NONE("none")

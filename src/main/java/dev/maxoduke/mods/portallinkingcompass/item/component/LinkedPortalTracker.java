@@ -17,7 +17,6 @@ import net.minecraft.world.level.Level;
 
 import java.util.Optional;
 
-@SuppressWarnings("SpellCheckingInspection")
 public record LinkedPortalTracker(
     Optional<BlockPos> originalPosition,
     Optional<ResourceKey<Level>> originalDimension,
